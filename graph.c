@@ -22,9 +22,7 @@ void add_node(Graph* graph, const char* id) {
 
 void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double amount, const char* date) {
     Node* currentNode = graph->nodes;
-    printf("fromNode %s\n", fromNodeId);
     while (currentNode != NULL) {
-        printf("current node %s\n", currentNode->id);
         if (strcmp(currentNode->id, fromNodeId) == 0) {
             Edge* new_edge = create_edge(fromNodeId, toNodeId, amount, date);
             new_edge->next = currentNode->edges;
@@ -36,7 +34,19 @@ void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double
     fprintf(stderr, "Source node not found in the graph.\n");
 }
 
+Node* find_node(Graph *graph, char *searchingId) {
+    Node* firstNode = graph->nodes;
+    while (firstNode != NULL) {
+        if (strcmp(firstNode->id, searchingId) == 0) {
+            return firstNode;
+        }
+        firstNode = firstNode->next;
+    }
+    return NULL;
+}
+
 void print_graph(const Graph* graph) {
+    printf("in print_graph\n");
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
         printf("Account (%s):\n", currentNode->id);
