@@ -14,11 +14,17 @@ Graph* create_graph();
 // Add a new node to the graph
 void add_node(Graph* graph, const char* id);
 
+// Delete a node
+void delete_node(Graph* graph, const char* idToDelete);
+
 // Check if node exists and return it, else return NULL
 Node* find_node(Graph *grpah, char *searchingId);
 
 // Add a new edge to the graph
 void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, double amount, const char* date);
+
+// Delete the edge from the id
+void delete_edge_from_node(Node* fromNode, const char* toNodeName);
 
 // Print the graph
 void print_graph(const Graph* graph);

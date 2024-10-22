@@ -20,6 +20,49 @@ void add_node(Graph* graph, const char* id) {
     graph->nodes = tempNode;
 }
 
+void delete_node(Graph* graph, const char* idToDelete) {
+    Node* nodeToDelete = graph->nodes;
+    Node* prev = NULL;
+    
+    // Βρες τον κόμβο προς διαγραφή
+    while (nodeToDelete != NULL && strcmp(nodeToDelete->id, idToDelete) != 0) {
+        prev = nodeToDelete;
+        nodeToDelete = nodeToDelete->next;
+    }
+
+    // Αν δεν βρεθεί ο κόμβος
+    if (nodeToDelete == NULL) {
+        printf("Node %s does not exist.\n", idToDelete);
+        return;
+    }
+
+    Node* temp = graph->nodes;
+    while (temp != NULL) {
+        delete_edge_from_node(temp, idToDelete);
+        temp = temp->next;
+    }
+
+    // Διαγραφή όλων των εξερχόμενων ακμών
+    Edge* edgeCurrent = nodeToDelete->edges;
+    while (edgeCurrent != NULL) {
+        Edge* edgeToDelete = edgeCurrent;
+        edgeCurrent = edgeCurrent->next;
+        free_edge(edgeToDelete);
+    }
+
+    // Διαγραφή του κόμβου από τη λίστα κόμβων
+    if (prev == NULL) {
+        // Ο κόμβος είναι ο πρώτος στη λίστα
+        graph->nodes = nodeToDelete->next;
+    } else {
+        prev->next = nodeToDelete->next;
+    }
+
+    // Απελευθέρωση μνήμης του κόμβου
+    free(nodeToDelete);
+    printf("Node %s deleted successfully.\n", idToDelete);
+}
+
 void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double amount, const char* date) {
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
@@ -34,6 +77,26 @@ void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double
     fprintf(stderr, "Source node not found in the graph.\n");
 }
 
+void delete_edge_from_node(Node* fromNode, const char* toNodeName) {
+    Edge* current = fromNode->edges;
+    Edge* prev = NULL;
+
+    while (current != NULL && strcmp(current->nodeTo, toNodeName) != 0) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current != NULL) {
+        if (prev == NULL) {
+            fromNode->edges = current->next;
+        } else {
+            prev->next = current->next;
+        }
+        free_edge(current);
+        printf("Edge to %s deleted.\n", toNodeName);
+    }
+}
+
 Node* find_node(Graph *graph, char *searchingId) {
     Node* firstNode = graph->nodes;
     while (firstNode != NULL) {
@@ -46,7 +109,6 @@ Node* find_node(Graph *graph, char *searchingId) {
 }
 
 void print_graph(const Graph* graph) {
-    printf("in print_graph\n");
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
         printf("Account (%s):\n", currentNode->id);

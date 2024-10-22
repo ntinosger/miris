@@ -20,6 +20,8 @@ int main(int argc, char *argv[]) {
     input[strcspn(input, "\n")] = 0;
 
     while (strcmp(input, "exit") != 0) {
+        
+
         if (input[0] == 'i') {
             printf("Insert trying\n");
 
@@ -74,6 +76,19 @@ int main(int argc, char *argv[]) {
             } else {
                 printf("Invalid input. Please provide nodes, sum, and date.\n");
             }
+        } else if (input[0] == 'd') {
+            printf("Delete trying\n");
+
+            char* inputParameters = input + 2;
+
+            char* parameter = strtok(inputParameters, " ");
+            while (parameter != NULL) {
+                printf("parameter: %s\n", parameter);
+
+                delete_node(graph, parameter);
+
+                parameter = strtok(NULL, " ");
+            }
         }
 
         printf("Input: %s\n", input);
@@ -83,9 +98,6 @@ int main(int argc, char *argv[]) {
         input[strcspn(input, "\n")] = 0;
 
     }
-
-
-
 
     // Add some nodes (accounts)
     add_node(graph, "C123");
