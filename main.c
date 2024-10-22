@@ -13,21 +13,26 @@ int main(int argc, char *argv[]) {
 
     Graph* graph = create_graph();
 
-    printf("Waiting for input action, press 'exit' to terminate\n");
-    char input[50];
+    // Add some nodes (accounts)
+    add_node(graph, "C123");
+    add_node(graph, "B234");
 
-    fgets(input, sizeof(input), stdin);
-    input[strcspn(input, "\n")] = 0;
+    add_edge(graph, "C123", "B234", 50.0, "2023-10-02");
+    add_edge(graph, "B234", "C123", 30.0, "2023-10-03");
 
-    while (strcmp(input, "exit") != 0) {
-        
+    while (1) {
+        char input[50];
 
-        if (input[0] == 'i') {
+        printf("Waiting for input action, press 'exit' to terminate\n");
+        fgets(input, sizeof(input), stdin);
+        input[strcspn(input, "\n")] = 0;
+
+        char* action = strtok(input, " ");
+
+        if (strcmp(action, "i") == 0 || strcmp(action, "insert") == 0) {
             printf("Insert trying\n");
 
-            char* inputParameters = input + 2;
-
-            char* parameter = strtok(inputParameters, " ");
+            char* parameter = strtok(NULL, " ");
             while (parameter != NULL) {
                 printf("parameter: %s\n", parameter);
 
@@ -35,11 +40,11 @@ int main(int argc, char *argv[]) {
 
                 parameter = strtok(NULL, " ");
             }
-        } else if (input[0] == 'n') {
+        } else if (strcmp(action, "n") == 0 || strcmp(action, "insert2") == 0) {
             char* inputParameters = input + 2;
 
             // Get the first node (Ni)
-            char* nodeA = strtok(inputParameters, " ");
+            char* nodeA = strtok(NULL, " ");
             // Get the second node (Nj)
             char* nodeB = strtok(NULL, " ");
             // Get the sum
@@ -76,12 +81,10 @@ int main(int argc, char *argv[]) {
             } else {
                 printf("Invalid input. Please provide nodes, sum, and date.\n");
             }
-        } else if (input[0] == 'd') {
+        } else if (strcmp(action, "d") == 0 || strcmp(action, "delete") == 0) {
             printf("Delete trying\n");
 
-            char* inputParameters = input + 2;
-
-            char* parameter = strtok(inputParameters, " ");
+            char* parameter = strtok(NULL, " ");
             while (parameter != NULL) {
                 printf("parameter: %s\n", parameter);
 
@@ -89,34 +92,18 @@ int main(int argc, char *argv[]) {
 
                 parameter = strtok(NULL, " ");
             }
+        } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
+            // Print the graph
+            print_graph(graph);
+
+            // Free the memory
+            free_graph(graph);
+
+            break;
+        } else {
+            printf("Unrecognized command\n");
         }
-
-        printf("Input: %s\n", input);
-        printf("Waiting for input action, press 'exit' to terminate\n");
-
-        fgets(input, sizeof(input), stdin);
-        input[strcspn(input, "\n")] = 0;
-
     }
-
-    // Add some nodes (accounts)
-    add_node(graph, "C123");
-    add_node(graph, "B234");
-
-    // Add some edges (transactions)
-    struct tm date = {0};
-    date.tm_year = 2023 - 1900; // Year since 1900
-    date.tm_mon = 9 - 1;        // Month (0-11)
-    date.tm_mday = 19;          // Day of the month
-
-    add_edge(graph, "C123", "B234", 50.0, "2023-10-02");
-    add_edge(graph, "B234", "C123", 30.0, "2023-10-03");
-
-    // Print the graph
-    print_graph(graph);
-
-    // Free the memory
-    free_graph(graph);
-
+    
     return 0;
 }
