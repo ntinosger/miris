@@ -3,7 +3,7 @@
 #include <string.h>
 #include "edge.h"
 
-Edge* create_edge(const int from, const int to, const double amount, const char* date) {
+Edge* create_edge(char* from, char* to, const double amount, const char* date) {
     Edge* new_edge = malloc(sizeof(Edge));
     if (new_edge == NULL) {
         fprintf(stderr, "Failed to allocate memory for edge.\n");

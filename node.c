@@ -4,14 +4,13 @@
 #include "node.h"
 #include "edge.h"
 
-Node* create_node(const int id, const char* name) {
+Node* create_node(const char* id) {
     Node* newNode = malloc(sizeof(Node));
     if (newNode == NULL) {
         fprintf(stderr, "Failed to allocate memory for node.\n");
         exit(EXIT_FAILURE);
     }
-    newNode->id = id;
-    strcpy(newNode->name, name);
+    strcpy(newNode->id, id);
     newNode->edges = NULL;
     newNode->next = NULL;
     return newNode;
@@ -19,11 +18,11 @@ Node* create_node(const int id, const char* name) {
 
 void free_node(Node* node) {
     // Free all edges of the node
-    Edge* current_edge = node->edges;
-    while (current_edge != NULL) {
-        Edge* temp = current_edge;
-        current_edge = current_edge->next;
-        free(temp);
+    Edge* currentEdge = node->edges;
+    while (currentEdge != NULL) {
+        Edge* temp = currentEdge;
+        currentEdge = currentEdge->next;
+        free_edge(temp);
     }
     free(node);
 }
