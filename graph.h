@@ -23,6 +23,8 @@ Node* find_node(Graph *grpah, char *searchingId);
 // Add a new edge to the graph
 void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, double amount, const char* date);
 
+void delete_edge(Graph* graph, char* fromNodeId, char* toNodeId);
+
 // Delete the edge from the id
 void delete_edge_from_node(Node* fromNode, const char* toNodeName);
 

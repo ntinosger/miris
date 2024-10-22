@@ -92,6 +92,13 @@ int main(int argc, char *argv[]) {
 
                 parameter = strtok(NULL, " ");
             }
+        } else if (strcmp(action, "l") == 0 || strcmp(action, "delete2") == 0) { 
+            printf("Delete2 trying\n");
+
+            char* fromNodeId = strtok(NULL, " ");
+            char* toNodeId = strtok(NULL, " ");
+            delete_edge(graph, fromNodeId, toNodeId);
+
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
             // Print the graph
             print_graph(graph);

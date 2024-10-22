@@ -77,6 +77,44 @@ void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double
     fprintf(stderr, "Source node not found in the graph.\n");
 }
 
+void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
+    Node* fromNode = find_node(graph, fromNodeId);
+    Node* toNode = find_node(graph, toNodeId);
+    
+    if (fromNode == NULL) {
+        printf("The node %s does not exist\n", fromNodeId);
+    }
+
+    if (toNode == NULL) {
+        printf("The node %s does not exist\n", toNodeId);
+    }
+
+    Edge* currentEdge = fromNode->edges;
+    Edge* prevEdge = NULL;
+
+    // Iterate through the edges of Ni to find the one pointing to Nj
+    while (currentEdge != NULL) {
+        if (strcmp(currentEdge->nodeTo, toNodeId) == 0) {
+            // Edge from Ni to Nj found, remove it
+            if (prevEdge == NULL) {
+                // Edge is the first in the adjacency list
+                fromNode->edges = currentEdge->next;
+            } else {
+                // Edge is somewhere in the middle or at the end
+                prevEdge->next = currentEdge->next;
+            }
+            printf("Deleted edge from %s to %s.\n", fromNodeId, toNodeId);
+            free(currentEdge);  // Free the edge memory
+            return;
+        }
+        prevEdge = currentEdge;
+        currentEdge = currentEdge->next;
+    }
+
+    // If we reached here, no edge between Ni and Nj was found
+    printf("No edge found between %s and %s.\n", fromNodeId, toNodeId);
+}
+
 void delete_edge_from_node(Node* fromNode, const char* toNodeName) {
     Edge* current = fromNode->edges;
     Edge* prev = NULL;
