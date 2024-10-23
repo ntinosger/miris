@@ -110,6 +110,30 @@ void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double su
     printf("Non-existing edge: %s %s %.2f %s\n", fromNodeId, toNodeId, sum, date);
 }
 
+void find_all_edges(Graph* graph, char* nodeId) {
+    // Find node nodeId in the graph
+    Node* node = find_node(graph, nodeId);
+
+    if (node == NULL) {
+        printf("Non-existing node: %s\n", nodeId);
+        return;
+    }
+
+    Edge* currentEdge = node->edges;
+
+    // If there are no outgoing edges
+    if (currentEdge == NULL) {
+        return;
+    }
+
+    // Print all outgoing edges of node nodeId
+    printf("Outgoing transactions for node %s:\n", nodeId);
+    while (currentEdge != NULL) {
+        printf("To: %s, Ammount: %.2f, Date: %s\n", currentEdge->nodeTo, currentEdge->amount, currentEdge->date);
+        currentEdge = currentEdge->next;
+    }
+}
+
 void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
     Node* fromNode = find_node(graph, fromNodeId);
     Node* toNode = find_node(graph, toNodeId);

@@ -122,6 +122,17 @@ int main(int argc, char *argv[]) {
             } else {
                 printf("Format error: m Ni Nj sum sum1 date date1\n");
             }
+        } else if (strcmp(action, "f") == 0 || strcmp(action, "find") == 0) {
+            
+            char* nodeId = strtok(NULL, " ");
+            if (nodeId != NULL) {
+                char* formatExtraParameter = strtok(NULL, " ");
+                if (formatExtraParameter != NULL) {
+                    printf("Format error: f Ni\n");
+                    continue;
+                }
+                find_all_edges(graph, nodeId);
+            }
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
             // Print the graph
             print_graph(graph);

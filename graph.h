@@ -25,6 +25,8 @@ void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, double amoun
 
 void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double sum, const double sum1, const char* date, const char* date1);
 
+void find_all_edges(Graph* graph, char* nodeId);
+
 void delete_edge(Graph* graph, char* fromNodeId, char* toNodeId);
 
 // Delete the edge from the id
