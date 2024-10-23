@@ -77,6 +77,39 @@ void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double
     fprintf(stderr, "Source node not found in the graph.\n");
 }
 
+void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double sum, const double sum1, const char* date, const char* date1) {
+    Node* fromNode = find_node(graph, fromNodeId);
+    Node* toNode = find_node(graph, toNodeId);
+    if (fromNode == NULL || toNode == NULL) {
+        printf("Non-existing node(s): ");
+        if (fromNode == NULL) {
+            printf("%s ", fromNodeId);
+        } 
+        if (toNode == NULL) {
+            printf("%s", toNodeId);
+        }
+        printf("\n");
+        return;
+    }
+
+    Edge* currentEdge = fromNode->edges;
+
+    // Iterate through the edges of fromNodeId to find the one pointing to toNodeId with the given sum and date
+    while (currentEdge != NULL) {
+        if (strcmp(currentEdge->nodeTo, toNodeId) == 0 && currentEdge->amount == sum && strcmp(currentEdge->date, date) == 0) {
+            // Found the matching edge, modify it
+            currentEdge->amount = sum1;
+            strcpy(currentEdge->date, date1);
+            printf("Modified edge from %s to %s with new sum: %.2f and new date: %s\n", fromNodeId, toNodeId, sum1, date1);
+            return;
+        }
+        currentEdge = currentEdge->next;
+    }
+
+    // If we reached here, no matching edge was found
+    printf("Non-existing edge: %s %s %.2f %s\n", fromNodeId, toNodeId, sum, date);
+}
+
 void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
     Node* fromNode = find_node(graph, fromNodeId);
     Node* toNode = find_node(graph, toNodeId);
@@ -92,10 +125,10 @@ void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
     Edge* currentEdge = fromNode->edges;
     Edge* prevEdge = NULL;
 
-    // Iterate through the edges of Ni to find the one pointing to Nj
+    // Iterate through the edges of fromNodeId to find the one pointing to toNodeId
     while (currentEdge != NULL) {
         if (strcmp(currentEdge->nodeTo, toNodeId) == 0) {
-            // Edge from Ni to Nj found, remove it
+            // Edge from fromNodeId to toNodeId found, remove it
             if (prevEdge == NULL) {
                 // Edge is the first in the adjacency list
                 fromNode->edges = currentEdge->next;
@@ -111,7 +144,7 @@ void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
         currentEdge = currentEdge->next;
     }
 
-    // If we reached here, no edge between Ni and Nj was found
+    // If we reached here, no edge between fromNodeId and toNodeId was found
     printf("No edge found between %s and %s.\n", fromNodeId, toNodeId);
 }
 

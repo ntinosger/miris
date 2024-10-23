@@ -41,8 +41,6 @@ int main(int argc, char *argv[]) {
                 parameter = strtok(NULL, " ");
             }
         } else if (strcmp(action, "n") == 0 || strcmp(action, "insert2") == 0) {
-            char* inputParameters = input + 2;
-
             // Get the first node (Ni)
             char* nodeA = strtok(NULL, " ");
             // Get the second node (Nj)
@@ -99,6 +97,31 @@ int main(int argc, char *argv[]) {
             char* toNodeId = strtok(NULL, " ");
             delete_edge(graph, fromNodeId, toNodeId);
 
+        } else if (strcmp(action, "m") == 0 || strcmp(action, "modify") == 0) {
+            // Get the first node (Ni)
+            char* fromNodeId = strtok(NULL, " ");
+            // Get the second node (Nj)
+            char* toNodeId = strtok(NULL, " ");
+            // Get the sum
+            char* sum = strtok(NULL, " ");
+            // Get the sum1
+            char* sum1 = strtok(NULL, " ");
+            // Get the date
+            char* date = strtok(NULL, " ");
+            // Get the date1
+            char* date1 = strtok(NULL, " ");
+
+            if (fromNodeId && toNodeId && sum && sum1 && date && date1) {
+                printf("NodeA: %s, NodeB: %s, Sum: %s, Sum1: %s, Date: %s, Date1: %s\n", fromNodeId, toNodeId, sum, sum1, date, date1);
+
+                // Convert sum to a numerical value (assuming it's a float)
+                float sumFloat = atof(sum);
+                float sum1Float = atof(sum1);
+
+                modify_edge(graph, fromNodeId, toNodeId, sumFloat, sum1Float, date, date1);
+            } else {
+                printf("Format error: m Ni Nj sum sum1 date date1\n");
+            }
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
             // Print the graph
             print_graph(graph);
