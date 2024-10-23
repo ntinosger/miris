@@ -134,6 +134,29 @@ void find_all_edges(Graph* graph, char* nodeId) {
     }
 }
 
+void find_all_incoming_edges(Graph* graph, char* nodeId) {
+    // Find node with nodeId in the graph (to make sure it exists)
+    Node* node = find_node(graph, nodeId);
+
+    if (node == NULL) {
+        printf("Non-existing node: %s\n", nodeId);
+        return;
+    }
+
+    // Iterate through all nodes to find edges pointing to nodeId
+    Node* currentNode = graph->nodes;
+    while (currentNode != NULL) {
+        Edge* currentEdge = currentNode->edges;
+        while (currentEdge != NULL) {
+            if (strcmp(currentEdge->nodeTo, nodeId) == 0) {  // Edge points to nodeId
+                printf("From: %s, Sum: %.2f, Date: %s\n", currentNode->id, currentEdge->amount, currentEdge->date);
+            }
+            currentEdge = currentEdge->next;
+        }
+        currentNode = currentNode->next;
+    }
+}
+
 void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
     Node* fromNode = find_node(graph, fromNodeId);
     Node* toNode = find_node(graph, toNodeId);

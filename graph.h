@@ -27,6 +27,8 @@ void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double su
 
 void find_all_edges(Graph* graph, char* nodeId);
 
+void find_all_incoming_edges(Graph* graph, char* nodeId);
+
 void delete_edge(Graph* graph, char* fromNodeId, char* toNodeId);
 
 // Delete the edge from the id

@@ -1,3 +1,0 @@
-/Users/ntinosger/CLionProjects/miris/cmake-build-debug/CMakeFiles/miris.dir
-/Users/ntinosger/CLionProjects/miris/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/ntinosger/CLionProjects/miris/cmake-build-debug/CMakeFiles/rebuild_cache.dir

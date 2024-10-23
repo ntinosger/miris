@@ -133,6 +133,17 @@ int main(int argc, char *argv[]) {
                 }
                 find_all_edges(graph, nodeId);
             }
+        } else if (strcmp(action, "r") == 0 || strcmp(action, "receiving") == 0) {
+            
+            char* nodeId = strtok(NULL, " ");
+            if (nodeId != NULL) {
+                char* formatExtraParameter = strtok(NULL, " ");
+                if (formatExtraParameter != NULL) {
+                    printf("Format error: r Ni\n");
+                    continue;
+                }
+                find_all_incoming_edges(graph, nodeId);
+            }
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
             // Print the graph
             print_graph(graph);
