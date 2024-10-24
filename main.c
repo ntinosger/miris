@@ -2,16 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 #include "graph.h"
+#include "files.h"
 
 int main(int argc, char *argv[]) {
-    // for (int i = 0; i < argc; i++) {
-    //     if (strcmp(argv[i], "exit") == 0) {
-    //         exit(0);
-    //     }
-    // }
-
+    // char* inputFile;
+    // char* outputFile;
     Graph* graph = create_graph();
+
+    // The first item of *argv is the executable name, so the i start from 1
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-i") == 0 && i + 1 < argc) {
+            printf("%s ", argv[i + 1]);
+            import_from_file(graph, argv[i + 1]);
+        } else if (strcmp(argv[i], "-o") == 0 && i + 1 < argc) {
+            printf("2 %s ", argv[i + 1]);
+        }
+    }
+
 
     // Add some nodes (accounts)
     add_node(graph, "C123");

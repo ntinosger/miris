@@ -1,8 +1,6 @@
 #ifndef EDGE_H
 #define EDGE_H
 
-#include <time.h>
-
 typedef struct Edge {
     char* nodeFrom;
     char* nodeTo;
