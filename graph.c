@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "graph.h"
-
 #include <string.h>
+
+#include "graph.h"
 
 Graph* create_graph() {
     Graph* graph = malloc(sizeof(Graph));
     if (graph == NULL) {
-        fprintf(stderr, "Failed to allocate memory for graph.\n");
+        fprintf(stderr, "Failed to allocate memory for the graph.\n");
         exit(EXIT_FAILURE);
     }
     TOTAL_BYTES += sizeof(Graph);

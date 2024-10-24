@@ -1,6 +1,9 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "node.h"
+#include "edge.h"
+
 // This structure represents the account of the user
 typedef struct Node {
     char id[10];

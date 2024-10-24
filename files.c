@@ -4,7 +4,7 @@
 
 #include "files.h"
 
-void import_from_file(Graph* graph, char* filepath) {
+void import_from_file(Graph* graph, HashTable** hashTable, char* filepath) {
     FILE* inputFile = fopen(filepath, "r");
 
     if (inputFile == NULL) {
@@ -33,16 +33,19 @@ void import_from_file(Graph* graph, char* filepath) {
         // Check if the nodes exist, otherwise add them
         if (searchingNodeA == NULL) {              
             add_node(graph, nodeFrom);
+            insert_to_hash_table(hashTable, graph->nodes);
             searchingNodeA = find_node(graph, nodeFrom); // Find it again after insertion
         }
 
         if (searchingNodeB == NULL) {
             add_node(graph, nodeTo);
+            insert_to_hash_table(hashTable, graph->nodes);
             searchingNodeB = find_node(graph, nodeTo); // Find it again after insertion
         }
 
         // Add an edge between the two nodes with the sum and date
         add_edge(graph, searchingNodeA->id, searchingNodeB->id, sum, dateStr);
+        
     }
 
     fclose(inputFile);

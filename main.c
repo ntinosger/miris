@@ -5,16 +5,18 @@
 
 #include "graph.h"
 #include "files.h"
+#include "hashTable.h"
 
 int main(int argc, char *argv[]) {
     char* outputFilepath = NULL;
 
     Graph* graph = create_graph();
+    HashTable* hashTable = create_hash_table();
 
     // The first item of *argv is the executable name, so the i start from 1
     for (int i = 1; i < argc; i++) {
         if (strcmp(argv[i], "-i") == 0 && i + 1 < argc) {
-            import_from_file(graph, argv[i + 1]);
+            import_from_file(graph, &hashTable, argv[i + 1]);
         } else if (strcmp(argv[i], "-o") == 0 && i + 1 < argc) {
             outputFilepath = argv[i + 1];
         }
@@ -131,6 +133,8 @@ int main(int argc, char *argv[]) {
             // Print the graph
             print_graph(graph);
 
+            print_hash_table(hashTable);
+
             // Write to output file
             write_to_file(graph, outputFilepath);
 
@@ -138,6 +142,7 @@ int main(int argc, char *argv[]) {
 
             // Free the memory
             free_graph(graph);
+            free_hash_table(hashTable);
 
             break;
         } else {

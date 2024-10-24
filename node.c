@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include "node.h"
-#include "edge.h"
 
 Node* create_node(const char* id) {
     Node* newNode = malloc(sizeof(Node));
