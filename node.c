@@ -10,6 +10,8 @@ Node* create_node(const char* id) {
         fprintf(stderr, "Failed to allocate memory for node.\n");
         exit(EXIT_FAILURE);
     }
+    TOTAL_BYTES += sizeof(Node);
+    // printf("node.c %zu\n", TOTAL_BYTES);
     strcpy(newNode->id, id);
     newNode->edges = NULL;
     newNode->next = NULL;

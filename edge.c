@@ -3,18 +3,22 @@
 #include <string.h>
 #include "edge.h"
 
+size_t TOTAL_BYTES = 0;
+
 Edge* create_edge(char* from, char* to, const double amount, const char* date) {
-    Edge* new_edge = malloc(sizeof(Edge));
-    if (new_edge == NULL) {
+    Edge* newEdge = malloc(sizeof(Edge));
+    if (newEdge == NULL) {
         fprintf(stderr, "Failed to allocate memory for edge.\n");
         exit(EXIT_FAILURE);
     }
-    new_edge->nodeFrom = from;
-    new_edge->nodeTo = to;
-    new_edge->amount = amount;
-    strcpy(new_edge->date, date);
-    new_edge->next = NULL;
-    return new_edge;
+    TOTAL_BYTES += sizeof(Edge);
+    // printf("edge.c %zu\n", TOTAL_BYTES);
+    newEdge->nodeFrom = from;
+    newEdge->nodeTo = to;
+    newEdge->amount = amount;
+    strcpy(newEdge->date, date);
+    newEdge->next = NULL;
+    return newEdge;
 }
 
 void free_edge(Edge* edge) {

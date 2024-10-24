@@ -10,6 +10,8 @@ Graph* create_graph() {
         fprintf(stderr, "Failed to allocate memory for graph.\n");
         exit(EXIT_FAILURE);
     }
+    TOTAL_BYTES += sizeof(Graph);
+    // printf("graph.c %zu\n", TOTAL_BYTES);
     graph->nodes = NULL;
     return graph;
 }
@@ -32,14 +34,14 @@ void delete_node(Graph* graph, const char* idToDelete) {
 
     // Αν δεν βρεθεί ο κόμβος
     if (nodeToDelete == NULL) {
-        printf("Node %s does not exist.\n", idToDelete);
+        printf("Non-existing node: %s\n", idToDelete);
         return;
     }
 
-    Node* temp = graph->nodes;
-    while (temp != NULL) {
-        delete_edge_from_node(temp, idToDelete);
-        temp = temp->next;
+    Node* tempNode = graph->nodes;
+    while (tempNode != NULL) {
+        delete_edge_from_node(tempNode, idToDelete);
+        tempNode = tempNode->next;
     }
 
     // Διαγραφή όλων των εξερχόμενων ακμών
@@ -60,21 +62,19 @@ void delete_node(Graph* graph, const char* idToDelete) {
 
     // Απελευθέρωση μνήμης του κόμβου
     free(nodeToDelete);
-    printf("Node %s deleted successfully.\n", idToDelete);
 }
 
 void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double amount, const char* date) {
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
         if (strcmp(currentNode->id, fromNodeId) == 0) {
-            Edge* new_edge = create_edge(fromNodeId, toNodeId, amount, date);
-            new_edge->next = currentNode->edges;
-            currentNode->edges = new_edge;
+            Edge* newEdge = create_edge(fromNodeId, toNodeId, amount, date);
+            newEdge->next = currentNode->edges;
+            currentNode->edges = newEdge;
             return;
         }
         currentNode = currentNode->next;
     }
-    fprintf(stderr, "Source node not found in the graph.\n");
 }
 
 void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double sum, const double sum1, const char* date, const char* date1) {
@@ -100,7 +100,6 @@ void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double su
             // Found the matching edge, modify it
             currentEdge->amount = sum1;
             strcpy(currentEdge->date, date1);
-            printf("Modified edge from %s to %s with new sum: %.2f and new date: %s\n", fromNodeId, toNodeId, sum1, date1);
             return;
         }
         currentEdge = currentEdge->next;
@@ -127,9 +126,8 @@ void find_all_edges(Graph* graph, char* nodeId) {
     }
 
     // Print all outgoing edges of node nodeId
-    printf("Outgoing transactions for node %s:\n", nodeId);
     while (currentEdge != NULL) {
-        printf("To: %s, Ammount: %.2f, Date: %s\n", currentEdge->nodeTo, currentEdge->amount, currentEdge->date);
+        printf("%s %s %.2f %s\n", node->id, currentEdge->nodeTo, currentEdge->amount, currentEdge->date);
         currentEdge = currentEdge->next;
     }
 }
@@ -149,7 +147,7 @@ void find_all_incoming_edges(Graph* graph, char* nodeId) {
         Edge* currentEdge = currentNode->edges;
         while (currentEdge != NULL) {
             if (strcmp(currentEdge->nodeTo, nodeId) == 0) {  // Edge points to nodeId
-                printf("From: %s, Sum: %.2f, Date: %s\n", currentNode->id, currentEdge->amount, currentEdge->date);
+                printf("%s %s %.2f %s\n", currentNode->id, currentEdge->nodeTo, currentEdge->amount, currentEdge->date);
             }
             currentEdge = currentEdge->next;
         }
@@ -161,12 +159,16 @@ void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
     Node* fromNode = find_node(graph, fromNodeId);
     Node* toNode = find_node(graph, toNodeId);
     
-    if (fromNode == NULL) {
-        printf("The node %s does not exist\n", fromNodeId);
-    }
-
-    if (toNode == NULL) {
-        printf("The node %s does not exist\n", toNodeId);
+    if (fromNode == NULL || toNode == NULL) {
+        printf("Non-existing node(s): ");
+        if (fromNode == NULL) {
+            printf("%s ", fromNodeId);
+        } 
+        if (toNode == NULL) {
+            printf("%s", toNodeId);
+        }
+        printf("\n");
+        return;
     }
 
     Edge* currentEdge = fromNode->edges;
@@ -229,11 +231,13 @@ Node* find_node(Graph *graph, char *searchingId) {
 void print_graph(const Graph* graph) {
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
-        printf("Account (%s):\n", currentNode->id);
-        Edge* current_edge = currentNode->edges;
-        while (current_edge != NULL) {
-            printf("  Transaction to Account %s: %.2f on %s\n", current_edge->nodeTo, current_edge->amount, current_edge->date);
-            current_edge = current_edge->next;
+        Edge* currentEdge = currentNode->edges;
+        while (currentEdge != NULL) {
+            printf("%s %s %.2f %s\n", currentNode->id, currentEdge->nodeTo, currentEdge->amount, currentEdge->date);
+            currentEdge = currentEdge->next;
+        }
+        if (currentEdge == NULL) {
+            printf("%s\n", currentNode->id);
         }
         currentNode = currentNode->next;
     }

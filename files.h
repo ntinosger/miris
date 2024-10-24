@@ -4,5 +4,6 @@
 #include "graph.h"
 
 void import_from_file(Graph* graph, char* filepath);
+void write_to_file(Graph* graph, char* filepath);
 
 #endif //FILES_H

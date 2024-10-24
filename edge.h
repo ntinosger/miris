@@ -5,9 +5,11 @@ typedef struct Edge {
     char* nodeFrom;
     char* nodeTo;
     double amount;
-    char date[11];  // To be reviewed
+    char date[11];
     struct Edge* next;
 } Edge;
+
+size_t TOTAL_BYTES;
 
 // Create the edge
 Edge* create_edge (char* from, char* to, double amount, const char* date);
