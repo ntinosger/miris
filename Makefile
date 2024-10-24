@@ -2,7 +2,7 @@
 SHELL = /bin/sh
 
 # Object files to be compiled
-OBJS = main.o node.o edge.o graph.o
+OBJS = main.o node.o edge.o graph.o files.o
 
 # Compiler flags
 CFLAGS = -Wall -g  # Enables warnings and debugging info
@@ -32,5 +32,5 @@ clean:
 	$(CC) $(CFLAGS) -c $<
 
 # Dependencies (optional: add header files if necessary)
-main.o: main.c graph.h
+main.o: main.c graph.h files.h
 
