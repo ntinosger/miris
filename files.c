@@ -61,12 +61,12 @@ void write_to_file(Graph* graph, char* filepath) {
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
         Edge* currentEdge = currentNode->edges;
+        if (currentEdge == NULL) {
+            fprintf(outputFile, "%s\n", currentNode->id);
+        }
         while (currentEdge != NULL) {
             fprintf(outputFile, "%s %s %.2f %s\n", currentNode->id, currentEdge->nodeTo, currentEdge->amount, currentEdge->date);
             currentEdge = currentEdge->next;
-        }
-                if (currentEdge == NULL) {
-            fprintf(outputFile, "%s\n", currentNode->id);
         }
         currentNode = currentNode->next;
     }
