@@ -4,7 +4,7 @@
 
 #include "hashTable.h"
 
-int HASH_TABLE_SIZE = 32;
+int HASH_TABLE_SIZE = 8;
 
 HashTable* create_hash_table() {
     HashTable* newHT = malloc(sizeof(HashTable));
@@ -100,6 +100,38 @@ void double_hash_table(HashTable** hashTable) {
 
     *hashTable = newHT;
     print_hash_table(*hashTable);
+}
+
+void delete_from_hash_table(HashTable* hashTable, Node* node) {
+    int key = hash_code(node->id);
+
+    if (search_hash_table(hashTable, node->id) == NULL) {
+        printf("The node: %s does not exists in the HT\n", node->id);
+        return;
+    }
+
+    HashNode* currentNode = hashTable->bucket[key];
+    HashNode* previousNode = NULL;
+     
+    while (currentNode != NULL) {
+        if (strcmp(currentNode->id, node->id) == 0) {
+            // First node in the bucket
+            if (previousNode == NULL) {
+                hashTable->bucket[key] = currentNode->next;
+            } else {
+                previousNode->next = currentNode->next;
+            }
+            
+            free(currentNode);
+            hashTable->itemsCount--;
+            printf("Node with ID %s deleted from hash table.\n", node->id);
+            return;
+        }
+
+        previousNode = currentNode;
+        currentNode = currentNode->next;
+    }
+    printf("Node with ID %s not found in hash table.\n", node->id);
 }
 
 void free_hash_table(HashTable* hashTable) {

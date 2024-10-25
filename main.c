@@ -45,49 +45,49 @@ int main(int argc, char *argv[]) {
             }
         } else if (strcmp(action, "n") == 0 || strcmp(action, "insert2") == 0) {
             // Get the first node (Ni)
-            char* nodeA = strtok(NULL, " ");
+            char* nodeFromId = strtok(NULL, " ");
             // Get the second node (Nj)
-            char* nodeB = strtok(NULL, " ");
+            char* nodeToId = strtok(NULL, " ");
             // Get the sum
             char* sumStr = strtok(NULL, " ");
             // Get the date
             char* dateStr = strtok(NULL, " ");
 
-            if (nodeA && nodeB && sumStr && dateStr) {
+            if (nodeFromId && nodeToId && sumStr && dateStr) {
                 // Convert sum to a numerical value (assuming it's a float)
                 float sum = atof(sumStr);
 
                 // Search for both nodes in the graph
-                Node* searchingNodeA = find_node(graph, nodeA);
-                Node* searchingNodeB = find_node(graph, nodeB);
+                Node* searchingNodeFrom = search_hash_table(hashTable, nodeFromId);
+                Node* searchingNodeTo = search_hash_table(hashTable, nodeToId);
 
                 // Check if the nodes exist, otherwise add them
-                if (searchingNodeA == NULL) {
-                    Node* nodeFrom = add_node(graph, nodeA);
-                    searchingNodeA = find_node(graph, nodeA); // Find it again after insertion
+                if (searchingNodeFrom == NULL) {
+                    searchingNodeFrom = add_node(graph, nodeFromId);
+                    insert_to_hash_table(&hashTable, searchingNodeFrom);
                 }
 
-                if (searchingNodeB == NULL) {
-                    Node* nodeTo = add_node(graph, nodeB);
-                    searchingNodeB = find_node(graph, nodeB); // Find it again after insertion
+                if (searchingNodeTo == NULL) {
+                    searchingNodeTo = add_node(graph, nodeToId);
+                    insert_to_hash_table(&hashTable, searchingNodeTo);
                 }
 
                 // Add an edge between the two nodes with the sum and date
-                add_edge(graph, searchingNodeA->id, searchingNodeB->id, sum, dateStr);
+                add_edge(graph, searchingNodeFrom->id, searchingNodeTo->id, sum, dateStr);
             } else {
                 printf("Format error: n Ni Nj sum date\n");
             }
         } else if (strcmp(action, "d") == 0 || strcmp(action, "delete") == 0) {
             char* parameter = strtok(NULL, " ");
             while (parameter != NULL) {
-                delete_node(graph, parameter);
+                delete_node(graph, hashTable, parameter);
 
                 parameter = strtok(NULL, " ");
             }
         } else if (strcmp(action, "l") == 0 || strcmp(action, "delete2") == 0) { 
             char* fromNodeId = strtok(NULL, " ");
             char* toNodeId = strtok(NULL, " ");
-            delete_edge(graph, fromNodeId, toNodeId);
+            delete_edge(graph, hashTable, fromNodeId, toNodeId);
 
         } else if (strcmp(action, "m") == 0 || strcmp(action, "modify") == 0) {
             // Get the first node (Ni)
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
                 float sumFloat = atof(sum);
                 float sum1Float = atof(sum1);
 
-                modify_edge(graph, fromNodeId, toNodeId, sumFloat, sum1Float, date, date1);
+                modify_edge(graph, hashTable, fromNodeId, toNodeId, sumFloat, sum1Float, date, date1);
             } else {
                 printf("Format error: m Ni Nj sum sum1 date date1\n");
             }
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
                     printf("Format error: f Ni\n");
                     continue;
                 }
-                find_all_edges(graph, nodeId);
+                find_all_edges(graph, hashTable, nodeId);
             }
         } else if (strcmp(action, "r") == 0 || strcmp(action, "receiving") == 0) {
             
@@ -132,7 +132,7 @@ int main(int argc, char *argv[]) {
                     printf("Format error: r Ni\n");
                     continue;
                 }
-                find_all_incoming_edges(graph, nodeId);
+                find_all_incoming_edges(graph, hashTable, nodeId);
             }
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
             // Print the graph
@@ -141,7 +141,9 @@ int main(int argc, char *argv[]) {
             print_hash_table(hashTable);
 
             // Write to output file
-            write_to_file(graph, outputFilepath);
+            if (outputFilepath != NULL) {
+                write_to_file(graph, outputFilepath);
+            }
 
             printf("%zu Bytes released\n", TOTAL_BYTES);
 

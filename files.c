@@ -27,24 +27,23 @@ void import_from_file(Graph* graph, HashTable** hashTable, char* filepath) {
 
         float sum = atof(sumStr);
 
-        Node* searchingNodeA = find_node(graph, nodeFromId);
-        Node* searchingNodeB = find_node(graph, nodeToId);
+        Node* searchingNodeFrom = search_hash_table((*hashTable), nodeFromId);
+        Node* searchingNodeTo = search_hash_table((*hashTable), nodeToId);
 
         // Check if the nodes exist, otherwise add them
-        if (searchingNodeA == NULL) {              
-            Node* nodeFrom = add_node(graph, nodeFromId);
-            insert_to_hash_table(hashTable, nodeFrom);
-            searchingNodeA = find_node(graph, nodeFromId); // Find it again after insertion
+        if (searchingNodeFrom == NULL) {
+            searchingNodeFrom = add_node(graph, nodeFromId);
+            insert_to_hash_table(hashTable, searchingNodeFrom);
         }
 
-        if (searchingNodeB == NULL) {
-            Node* nodeTo =add_node(graph, nodeToId);
-            insert_to_hash_table(hashTable, nodeTo);
-            searchingNodeB = find_node(graph, nodeToId); // Find it again after insertion
+        if (searchingNodeTo == NULL) {
+            searchingNodeTo = add_node(graph, nodeToId);
+            insert_to_hash_table(hashTable, searchingNodeTo);
         }
+
 
         // Add an edge between the two nodes with the sum and date
-        add_edge(graph, searchingNodeA->id, searchingNodeB->id, sum, dateStr);
+        add_edge(graph, searchingNodeFrom->id, searchingNodeTo->id, sum, dateStr);
         
     }
 

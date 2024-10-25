@@ -23,15 +23,8 @@ Node* add_node(Graph* graph, const char* id) {
     return newNode;
 }
 
-void delete_node(Graph* graph, const char* idToDelete) {
-    Node* nodeToDelete = graph->nodes;
-    Node* prev = NULL;
-    
-    // Βρες τον κόμβο προς διαγραφή
-    while (nodeToDelete != NULL && strcmp(nodeToDelete->id, idToDelete) != 0) {
-        prev = nodeToDelete;
-        nodeToDelete = nodeToDelete->next;
-    }
+void delete_node(Graph* graph, HashTable* hashTable, char* idToDelete) {
+    Node* nodeToDelete = search_hash_table(hashTable, idToDelete);
 
     // Αν δεν βρεθεί ο κόμβος
     if (nodeToDelete == NULL) {
@@ -53,15 +46,26 @@ void delete_node(Graph* graph, const char* idToDelete) {
         free_edge(edgeToDelete);
     }
 
-    // Διαγραφή του κόμβου από τη λίστα κόμβων
-    if (prev == NULL) {
-        // Ο κόμβος είναι ο πρώτος στη λίστα
-        graph->nodes = nodeToDelete->next;
-    } else {
-        prev->next = nodeToDelete->next;
+    Node* previousNode = NULL;
+    tempNode = graph->nodes;
+    while (tempNode != NULL && tempNode != nodeToDelete) {
+        previousNode = tempNode;
+        tempNode = tempNode->next;
     }
 
-    // Απελευθέρωση μνήμης του κόμβου
+    if (tempNode == nodeToDelete) {
+        if (previousNode == NULL) {
+            // nodeToDelete is the first node in the list
+            graph->nodes = nodeToDelete->next;
+        } else {
+            // Update the previous node to skip nodeToDelete
+            previousNode->next = nodeToDelete->next;
+        }
+    }
+
+    // Remove the node from the hash table
+    delete_from_hash_table(hashTable, nodeToDelete);
+
     free(nodeToDelete);
 }
 
@@ -78,9 +82,9 @@ void add_edge(const Graph* graph, char* fromNodeId, char* toNodeId, const double
     }
 }
 
-void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double sum, const double sum1, const char* date, const char* date1) {
-    Node* fromNode = find_node(graph, fromNodeId);
-    Node* toNode = find_node(graph, toNodeId);
+void modify_edge(Graph* graph, HashTable* hashTable, char* fromNodeId, char* toNodeId, const double sum, const double sum1, const char* date, const char* date1) {
+    Node* fromNode = search_hash_table(hashTable, fromNodeId);
+    Node* toNode = search_hash_table(hashTable, toNodeId);
     if (fromNode == NULL || toNode == NULL) {
         printf("Non-existing node(s): ");
         if (fromNode == NULL) {
@@ -110,9 +114,9 @@ void modify_edge(Graph* graph, char* fromNodeId, char* toNodeId, const double su
     printf("Non-existing edge: %s %s %.2f %s\n", fromNodeId, toNodeId, sum, date);
 }
 
-void find_all_edges(Graph* graph, char* nodeId) {
+void find_all_edges(Graph* graph, HashTable* hashTable, char* nodeId) {
     // Find node nodeId in the graph
-    Node* node = find_node(graph, nodeId);
+    Node* node = search_hash_table(hashTable, nodeId);
 
     if (node == NULL) {
         printf("Non-existing node: %s\n", nodeId);
@@ -133,9 +137,9 @@ void find_all_edges(Graph* graph, char* nodeId) {
     }
 }
 
-void find_all_incoming_edges(Graph* graph, char* nodeId) {
+void find_all_incoming_edges(Graph* graph, HashTable* hashTable, char* nodeId) {
     // Find node with nodeId in the graph (to make sure it exists)
-    Node* node = find_node(graph, nodeId);
+    Node* node = search_hash_table(hashTable, nodeId);
 
     if (node == NULL) {
         printf("Non-existing node: %s\n", nodeId);
@@ -156,9 +160,9 @@ void find_all_incoming_edges(Graph* graph, char* nodeId) {
     }
 }
 
-void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
-    Node* fromNode = find_node(graph, fromNodeId);
-    Node* toNode = find_node(graph, toNodeId);
+void delete_edge(Graph* graph, HashTable* hashTable, char* fromNodeId, char* toNodeId) {
+    Node* fromNode = search_hash_table(hashTable, fromNodeId);
+    Node* toNode = search_hash_table(hashTable, toNodeId);
     
     if (fromNode == NULL || toNode == NULL) {
         printf("Non-existing node(s): ");
@@ -173,24 +177,24 @@ void delete_edge(Graph* graph ,char* fromNodeId, char* toNodeId) {
     }
 
     Edge* currentEdge = fromNode->edges;
-    Edge* prevEdge = NULL;
+    Edge* previousEdge = NULL;
 
     // Iterate through the edges of fromNodeId to find the one pointing to toNodeId
     while (currentEdge != NULL) {
         if (strcmp(currentEdge->nodeTo, toNodeId) == 0) {
             // Edge from fromNodeId to toNodeId found, remove it
-            if (prevEdge == NULL) {
+            if (previousEdge == NULL) {
                 // Edge is the first in the adjacency list
                 fromNode->edges = currentEdge->next;
             } else {
                 // Edge is somewhere in the middle or at the end
-                prevEdge->next = currentEdge->next;
+                previousEdge->next = currentEdge->next;
             }
             printf("Deleted edge from %s to %s.\n", fromNodeId, toNodeId);
             free(currentEdge);  // Free the edge memory
             return;
         }
-        prevEdge = currentEdge;
+        previousEdge = currentEdge;
         currentEdge = currentEdge->next;
     }
 
