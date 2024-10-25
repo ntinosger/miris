@@ -32,9 +32,14 @@ int main(int argc, char *argv[]) {
         if (strcmp(action, "i") == 0 || strcmp(action, "insert") == 0) {
             char* parameter = strtok(NULL, " ");
             while (parameter != NULL) {
-                add_node(graph, parameter);
-                if (strcmp(graph->nodes->id, parameter) == 0) {
-                    printf("Succ: %s\n", graph->nodes->id);
+                if (search_hash_table(hashTable, parameter) == NULL) {
+                    Node* node = add_node(graph, parameter);
+                    insert_to_hash_table(&hashTable, node);               
+                    if (strcmp(graph->nodes->id, parameter) == 0) {
+                        printf("Succ: %s\n", graph->nodes->id);
+                    }
+                } else {
+                    printf("The node already exists\n");
                 }
                 parameter = strtok(NULL, " ");
             }
@@ -58,12 +63,12 @@ int main(int argc, char *argv[]) {
 
                 // Check if the nodes exist, otherwise add them
                 if (searchingNodeA == NULL) {
-                    add_node(graph, nodeA);
+                    Node* nodeFrom = add_node(graph, nodeA);
                     searchingNodeA = find_node(graph, nodeA); // Find it again after insertion
                 }
 
                 if (searchingNodeB == NULL) {
-                    add_node(graph, nodeB);
+                    Node* nodeTo = add_node(graph, nodeB);
                     searchingNodeB = find_node(graph, nodeB); // Find it again after insertion
                 }
 

@@ -17,9 +17,9 @@ void import_from_file(Graph* graph, HashTable** hashTable, char* filepath) {
         line[strcspn(line, "\n")] = 0;
 
         // Get the first node (Ni)
-        char* nodeFrom = strtok(line, " ");
+        char* nodeFromId = strtok(line, " ");
         // Get the second node (Nj)
-        char* nodeTo = strtok(NULL, " ");
+        char* nodeToId = strtok(NULL, " ");
         // Get the sum
         char* sumStr = strtok(NULL, " ");
         // Get the date
@@ -27,20 +27,20 @@ void import_from_file(Graph* graph, HashTable** hashTable, char* filepath) {
 
         float sum = atof(sumStr);
 
-        Node* searchingNodeA = find_node(graph, nodeFrom);
-        Node* searchingNodeB = find_node(graph, nodeTo);
+        Node* searchingNodeA = find_node(graph, nodeFromId);
+        Node* searchingNodeB = find_node(graph, nodeToId);
 
         // Check if the nodes exist, otherwise add them
         if (searchingNodeA == NULL) {              
-            add_node(graph, nodeFrom);
-            insert_to_hash_table(hashTable, graph->nodes);
-            searchingNodeA = find_node(graph, nodeFrom); // Find it again after insertion
+            Node* nodeFrom = add_node(graph, nodeFromId);
+            insert_to_hash_table(hashTable, nodeFrom);
+            searchingNodeA = find_node(graph, nodeFromId); // Find it again after insertion
         }
 
         if (searchingNodeB == NULL) {
-            add_node(graph, nodeTo);
-            insert_to_hash_table(hashTable, graph->nodes);
-            searchingNodeB = find_node(graph, nodeTo); // Find it again after insertion
+            Node* nodeTo =add_node(graph, nodeToId);
+            insert_to_hash_table(hashTable, nodeTo);
+            searchingNodeB = find_node(graph, nodeToId); // Find it again after insertion
         }
 
         // Add an edge between the two nodes with the sum and date

@@ -42,6 +42,11 @@ int hash_code(char* id) {
 void insert_to_hash_table(HashTable** hashTable, Node* node) {
     int key = hash_code(node->id);
 
+    if (search_hash_table(*hashTable, node->id) != NULL) {
+        printf("The node: %s exists in the HT\n", node->id);
+        return;
+    }
+
     HashNode* newHN = malloc(sizeof(HashNode));
     if (newHN == NULL) {
         fprintf(stderr, "Failed to allocate memory for the hash node.\n");

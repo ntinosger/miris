@@ -12,7 +12,7 @@ typedef struct Graph {
 Graph* create_graph();
 
 // Add a new node to the graph
-void add_node(Graph* graph, const char* id);
+Node* add_node(Graph* graph, const char* id);
 
 // Delete a node
 void delete_node(Graph* graph, const char* idToDelete);

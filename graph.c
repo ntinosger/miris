@@ -16,10 +16,11 @@ Graph* create_graph() {
     return graph;
 }
 
-void add_node(Graph* graph, const char* id) {
-    Node* tempNode = create_node(id);
-    tempNode->next = graph->nodes;
-    graph->nodes = tempNode;
+Node* add_node(Graph* graph, const char* id) {
+    Node* newNode = create_node(id);
+    newNode->next = graph->nodes;
+    graph->nodes = newNode;
+    return newNode;
 }
 
 void delete_node(Graph* graph, const char* idToDelete) {
