@@ -134,11 +134,23 @@ int main(int argc, char *argv[]) {
                 }
                 find_all_incoming_edges(graph, hashTable, nodeId);
             }
+        } else if (strcmp(action, "c") == 0 || strcmp(action, "circlefind") == 0) {
+
+            char* nodeId = strtok(NULL, " ");
+            if (nodeId != NULL) {
+                char* formatExtraParameter = strtok(NULL, " ");
+                if (formatExtraParameter != NULL) {
+                    printf("Format error: c Ni\n");
+                    continue;
+                }
+                find_circles(hashTable, nodeId);
+                // printf("TEMP\n");
+            }
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
             // Print the graph
             print_graph(graph);
 
-            print_hash_table(hashTable);
+            // print_hash_table(hashTable);
 
             // Write to output file
             if (outputFilepath != NULL) {

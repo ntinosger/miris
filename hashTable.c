@@ -96,10 +96,10 @@ void double_hash_table(HashTable** hashTable) {
     free_hash_table(*hashTable);
 
     // print_hash_table(newHT);
-    printf("performing resizing\n");
+    // printf("performing resizing\n");
 
     *hashTable = newHT;
-    print_hash_table(*hashTable);
+    // print_hash_table(*hashTable);
 }
 
 void delete_from_hash_table(HashTable* hashTable, Node* node) {
@@ -124,14 +124,14 @@ void delete_from_hash_table(HashTable* hashTable, Node* node) {
             
             free(currentNode);
             hashTable->itemsCount--;
-            printf("Node with ID %s deleted from hash table.\n", node->id);
+            // printf("Node with ID %s deleted from hash table.\n", node->id);
             return;
         }
 
         previousNode = currentNode;
         currentNode = currentNode->next;
     }
-    printf("Node with ID %s not found in hash table.\n", node->id);
+    // printf("Node with ID %s not found in hash table.\n", node->id);
 }
 
 void free_hash_table(HashTable* hashTable) {

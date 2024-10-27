@@ -35,6 +35,12 @@ void delete_edge(Graph* graph, HashTable* hashTable, char* fromNodeId, char* toN
 // Delete the edge from the id
 void delete_edge_from_node(Node* fromNode, const char* toNodeName);
 
+void print_cycle(Graph* pathGraph);
+
+void dfs_check_cycle(HashTable* hashTable, Node* node, HashTable* visitedNodes, Graph* currentPath, HashTable* currentPathHT);
+
+void find_circles(HashTable* hashTable, char* id);
+
 // Print the graph
 void print_graph(const Graph* graph);
 

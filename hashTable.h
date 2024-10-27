@@ -28,6 +28,8 @@ Node* search_hash_table(HashTable* hashTable, char* id);
 
 void double_hash_table(HashTable** hashTable);
 
+// void reset_hash_table(HashTable* hashTable);
+
 void delete_from_hash_table(HashTable* hashTable, Node* node);
 
 void free_hash_table(HashTable* hashTable);

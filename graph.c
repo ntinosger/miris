@@ -222,6 +222,119 @@ void delete_edge_from_node(Node* fromNode, const char* toNodeName) {
     }
 }
 
+void print_cycle(Graph* pathGraph) {
+    Node* currentNode = pathGraph->nodes;
+    
+    // Looping the first time to count the nodes in the graph
+    int counter = 0;
+    while (currentNode != NULL) {
+        counter++;
+        currentNode = currentNode->next;
+    }
+
+    currentNode = pathGraph->nodes;
+    
+    // Using an array to print the nodes in the reverse order
+    char** printArray = malloc(sizeof(char*) * counter);
+    if (printArray == NULL) {
+        fprintf(stderr, "Failed to allocate memory for the print printArray.\n");
+        return;
+    }
+
+    int index = 0;
+    while (currentNode != NULL) {
+        printArray[index] = currentNode->id;  // Store current node ID
+        index++;
+        currentNode = currentNode->next;
+    }
+    
+    for (int i = counter - 1; i >= 0; i--) {
+        printf("%s, ", printArray[i]);
+    }
+    printf("%s\n", printArray[counter - 1]);
+
+    free(printArray);
+}
+
+void delete_for_dfs(Graph* path, HashTable* pathHT, char* idToDelete) {
+    Node* nodeToDelete = search_hash_table(pathHT, idToDelete);
+    if (nodeToDelete == NULL) {
+        printf("Non-existing node: %s\n", idToDelete);
+        return;
+    }
+
+    Node* currentNode = path->nodes;
+
+    // This while is never used, it's just for error control
+    Node* previousNode = NULL;
+    while (currentNode != NULL && strcmp(currentNode->id, idToDelete) != 0) {
+        previousNode = currentNode;
+        currentNode = currentNode->next;
+    }
+
+    if (strcmp(currentNode->id, nodeToDelete->id) == 0) {
+        if (previousNode == NULL) {
+            // nodeToDelete is the first node in the list
+            path->nodes = currentNode->next;
+        } else {
+            // Update the previous node to skip nodeToDelete
+            previousNode->next = currentNode->next;
+        }
+    }
+
+    delete_from_hash_table(pathHT, nodeToDelete);
+
+    free(currentNode);
+}
+
+
+void dfs_check_cycle(HashTable* hashTable, Node* node, HashTable* visitedNodes, Graph* currentPath, HashTable* currentPathHT) {
+    // Add current node in visited hash table and in the current path graph
+    insert_to_hash_table(&currentPathHT, node);
+    insert_to_hash_table(&visitedNodes, node);
+    add_node(currentPath, node->id);
+
+    Edge* edge = node->edges;
+    while (edge != NULL) {
+        Node* neighborNode = search_hash_table(hashTable, edge->nodeTo);
+
+        if (neighborNode != NULL) {
+            // Check if the neighbor is in the current path
+            if (search_hash_table(currentPathHT, neighborNode->id) != NULL) {
+                // Cycle detected
+                print_cycle(currentPath);
+            } else if (search_hash_table(visitedNodes, neighborNode->id) == NULL) {
+                // If not visited, continue DFS
+                dfs_check_cycle(hashTable, neighborNode, visitedNodes, currentPath, currentPathHT);
+            }
+        }
+        edge = edge->next; // Move to the next edge
+    }
+
+    delete_for_dfs(currentPath, currentPathHT, node->id);
+    delete_from_hash_table(visitedNodes, node);
+}
+
+void find_circles(HashTable* hashTable, char* id) {
+    Node* node = search_hash_table(hashTable, id);
+    if (node == NULL) {
+        printf("Node %s not found in the graph.\n", id);
+        return;
+    }
+
+    // Using both a graph and a hash table to track the current path
+    Graph* currentPath = create_graph();
+    HashTable* currentPathHT = create_hash_table();
+    HashTable* visitedNodes = create_hash_table();
+
+    dfs_check_cycle(hashTable, node, visitedNodes, currentPath, currentPathHT);
+
+    // Free all the structs used for dfs
+    free_hash_table(visitedNodes);
+    free_hash_table(currentPathHT);
+    free_graph(currentPath);
+}
+
 Node* find_node(Graph *graph, char *searchingId) {
     Node* firstNode = graph->nodes;
     while (firstNode != NULL) {
