@@ -10,6 +10,7 @@
 int main(int argc, char *argv[]) {
     char* outputFilepath = NULL;
 
+    // Create the structs
     Graph* graph = create_graph();
     HashTable* hashTable = create_hash_table();
 
@@ -22,11 +23,16 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // The program runs until exit is pressed
     while (1) {
+        printf("miris> ");
+
         char input[50];
         fgets(input, sizeof(input), stdin);
+        // Remove the \n from the string to avoid errors
         input[strcspn(input, "\n")] = 0;
 
+        // Get the first word (miris action)
         char* action = strtok(input, " ");
 
         if (strcmp(action, "i") == 0 || strcmp(action, "insert") == 0) {
@@ -44,9 +50,9 @@ int main(int argc, char *argv[]) {
                 parameter = strtok(NULL, " ");
             }
         } else if (strcmp(action, "n") == 0 || strcmp(action, "insert2") == 0) {
-            // Get the first node (Ni)
+            // Get the from node
             char* nodeFromId = strtok(NULL, " ");
-            // Get the second node (Nj)
+            // Get the to node
             char* nodeToId = strtok(NULL, " ");
             // Get the sum
             char* sumStr = strtok(NULL, " ");
@@ -54,14 +60,14 @@ int main(int argc, char *argv[]) {
             char* dateStr = strtok(NULL, " ");
 
             if (nodeFromId && nodeToId && sumStr && dateStr) {
-                // Convert sum to a numerical value (assuming it's a float)
+                // Convert sum to a float
                 float sum = atof(sumStr);
 
-                // Search for both nodes in the graph
+                // Search for the nodes in the hash table
                 Node* searchingNodeFrom = search_hash_table(hashTable, nodeFromId);
                 Node* searchingNodeTo = search_hash_table(hashTable, nodeToId);
 
-                // Check if the nodes exist, otherwise add them
+                // If the nodes don't exist, add them
                 if (searchingNodeFrom == NULL) {
                     searchingNodeFrom = add_node(graph, nodeFromId);
                     insert_to_hash_table(&hashTable, searchingNodeFrom);
@@ -72,8 +78,8 @@ int main(int argc, char *argv[]) {
                     insert_to_hash_table(&hashTable, searchingNodeTo);
                 }
 
-                // Add an edge between the two nodes with the sum and date
-                add_edge(graph, searchingNodeFrom->id, searchingNodeTo->id, sum, dateStr);
+                // Add the edge with the sum and date
+                add_edge(graph, hashTable, searchingNodeFrom->id, searchingNodeTo->id, sum, dateStr);
             } else {
                 printf("Format error: n Ni Nj sum date\n");
             }
@@ -90,9 +96,9 @@ int main(int argc, char *argv[]) {
             delete_edge(graph, hashTable, fromNodeId, toNodeId);
 
         } else if (strcmp(action, "m") == 0 || strcmp(action, "modify") == 0) {
-            // Get the first node (Ni)
+            // Get the from node
             char* fromNodeId = strtok(NULL, " ");
-            // Get the second node (Nj)
+            // Get the to node
             char* toNodeId = strtok(NULL, " ");
             // Get the sum
             char* sum = strtok(NULL, " ");
@@ -104,7 +110,7 @@ int main(int argc, char *argv[]) {
             char* date1 = strtok(NULL, " ");
 
             if (fromNodeId && toNodeId && sum && sum1 && date && date1) {
-                // Convert sum to a numerical value
+                // Convert sums to a float
                 float sumFloat = atof(sum);
                 float sum1Float = atof(sum1);
 
@@ -124,7 +130,7 @@ int main(int argc, char *argv[]) {
                 find_all_edges(graph, hashTable, nodeId);
             }
         } else if (strcmp(action, "r") == 0 || strcmp(action, "receiving") == 0) {
-            
+
             char* nodeId = strtok(NULL, " ");
             if (nodeId != NULL) {
                 char* formatExtraParameter = strtok(NULL, " ");
@@ -144,12 +150,10 @@ int main(int argc, char *argv[]) {
                     continue;
                 }
                 find_circles(hashTable, nodeId);
-                // printf("TEMP\n");
             }
         } else if (strcmp(action, "e") == 0 || strcmp(action, "exit") == 0) {
-            // Print the graph
-            print_graph(graph);
-
+            // Print the structs, for debugging only
+            // print_graph(graph);
             // print_hash_table(hashTable);
 
             // Write to output file
@@ -168,6 +172,6 @@ int main(int argc, char *argv[]) {
             printf("Unrecognized command\n");
         }
     }
-    
+
     return 0;
 }

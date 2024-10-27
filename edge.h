@@ -1,6 +1,7 @@
 #ifndef EDGE_H
 #define EDGE_H
 
+// This struct represents a transaction between two users
 typedef struct Edge {
     char* nodeFrom;
     char* nodeTo;
@@ -11,10 +12,8 @@ typedef struct Edge {
 
 size_t TOTAL_BYTES;
 
-// Create the edge
 Edge* create_edge (char* from, char* to, double amount, const char* date);
 
-// Free the memory of the edge
 void free_edge(Edge* edge);
 
 #endif //EDGE_H

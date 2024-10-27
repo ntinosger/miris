@@ -4,6 +4,7 @@
 
 #include "node.h"
 
+// Create the node
 Node* create_node(const char* id) {
     Node* newNode = malloc(sizeof(Node));
     if (newNode == NULL) {
@@ -11,20 +12,23 @@ Node* create_node(const char* id) {
         exit(EXIT_FAILURE);
     }
     TOTAL_BYTES += sizeof(Node);
-    // printf("node.c %zu\n", TOTAL_BYTES);
+
     strcpy(newNode->id, id);
     newNode->edges = NULL;
     newNode->next = NULL;
     return newNode;
 }
 
+// Free the node
 void free_node(Node* node) {
-    // Free all edges of the node
+    TOTAL_BYTES -= sizeof(Node);
+
+    // Free the edges of the node first
     Edge* currentEdge = node->edges;
     while (currentEdge != NULL) {
-        Edge* temp = currentEdge;
+        Edge* tempEdge = currentEdge;
         currentEdge = currentEdge->next;
-        free_edge(temp);
+        free_edge(tempEdge);
     }
     free(node);
 }

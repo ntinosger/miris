@@ -16,21 +16,22 @@ void import_from_file(Graph* graph, HashTable** hashTable, char* filepath) {
     while (fgets(line, sizeof(line), inputFile)) {
         line[strcspn(line, "\n")] = 0;
 
-        // Get the first node (Ni)
+        // Get the from node
         char* nodeFromId = strtok(line, " ");
-        // Get the second node (Nj)
+        // Get the to node
         char* nodeToId = strtok(NULL, " ");
-        // Get the sum
+        // Get the amount
         char* sumStr = strtok(NULL, " ");
         // Get the date
         char* dateStr = strtok(NULL, " ");
 
         float sum = atof(sumStr);
 
+        // Search for the nodes in the hash table
         Node* searchingNodeFrom = search_hash_table((*hashTable), nodeFromId);
         Node* searchingNodeTo = search_hash_table((*hashTable), nodeToId);
 
-        // Check if the nodes exist, otherwise add them
+        // If the nodes don't exist, add them
         if (searchingNodeFrom == NULL) {
             searchingNodeFrom = add_node(graph, nodeFromId);
             insert_to_hash_table(hashTable, searchingNodeFrom);
@@ -42,8 +43,8 @@ void import_from_file(Graph* graph, HashTable** hashTable, char* filepath) {
         }
 
 
-        // Add an edge between the two nodes with the sum and date
-        add_edge(graph, searchingNodeFrom->id, searchingNodeTo->id, sum, dateStr);
+        // Add the edge with the sum and date
+        add_edge(graph, *hashTable, searchingNodeFrom->id, searchingNodeTo->id, sum, dateStr);
         
     }
 
@@ -58,6 +59,7 @@ void write_to_file(Graph* graph, char* filepath) {
         return;
     }
 
+    // Write the graph into the file
     Node* currentNode = graph->nodes;
     while (currentNode != NULL) {
         Edge* currentEdge = currentNode->edges;

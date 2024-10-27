@@ -4,8 +4,10 @@
 
 #include "hashTable.h"
 
+// Starting size of 8 items in the hash table
 int HASH_TABLE_SIZE = 8;
 
+// Create the hash table
 HashTable* create_hash_table() {
     HashTable* newHT = malloc(sizeof(HashTable));
     if (newHT == NULL) {
@@ -30,6 +32,7 @@ HashTable* create_hash_table() {
     return newHT;
 }
 
+// Function to perform the hashing of an id using its ASCII code because the IDs are char (not int)
 int hash_code(char* id) {
     int sumAsciiCodes = 0;
     for (int i = 0; id[i] != '\0'; i++) {
@@ -39,9 +42,12 @@ int hash_code(char* id) {
     return sumAsciiCodes % HASH_TABLE_SIZE;
 }
 
+// Function to insert a new node into the hashing table
 void insert_to_hash_table(HashTable** hashTable, Node* node) {
+    // Get the hash code
     int key = hash_code(node->id);
 
+    // Check if the node already exists in the hash table to avoid double insert
     if (search_hash_table(*hashTable, node->id) != NULL) {
         printf("The node: %s exists in the HT\n", node->id);
         return;
@@ -53,19 +59,26 @@ void insert_to_hash_table(HashTable** hashTable, Node* node) {
         exit(EXIT_FAILURE);
     }
     TOTAL_BYTES += sizeof(HashNode);
+    
+    // Insert the values in the new HashNode
     strcpy(newHN->id, node->id);
     newHN->node = node;
     newHN->next = (*hashTable)->bucket[key];
+
+    // Insert the HashNode in the right bucket using the hash key
     (*hashTable)->bucket[key] = newHN;
 
+    // Increase the counter
     (*hashTable)->itemsCount++;
 
+    // Check if resizing is needed
     float loadingFactor = (float)(*hashTable)->itemsCount / HASH_TABLE_SIZE;
     if (loadingFactor > 0.6) {
         double_hash_table(hashTable);
     }
 }
 
+// Function to search in the hash table
 Node* search_hash_table(HashTable* hashTable, char* id) {
     int key = hash_code(id);
 
@@ -79,11 +92,13 @@ Node* search_hash_table(HashTable* hashTable, char* id) {
     return NULL;
 }
 
+// Function to double the size of the hash table
 void double_hash_table(HashTable** hashTable) {
     HASH_TABLE_SIZE *= 2;
 
     HashTable* newHT = create_hash_table();
 
+    // Copy the old nodes into the new Hash Table 
     for (int i = 0; i < HASH_TABLE_SIZE / 2; i++) {
         HashNode* bucketNode = (*hashTable)->bucket[i];
         while (bucketNode != NULL) {
@@ -93,15 +108,14 @@ void double_hash_table(HashTable** hashTable) {
         }
     }
 
+    // Free the old hash table memory
     free_hash_table(*hashTable);
 
-    // print_hash_table(newHT);
-    // printf("performing resizing\n");
-
+    // Point the old hash table to the new
     *hashTable = newHT;
-    // print_hash_table(*hashTable);
 }
 
+// Function to remove a node from the hash table
 void delete_from_hash_table(HashTable* hashTable, Node* node) {
     int key = hash_code(node->id);
 
@@ -115,7 +129,6 @@ void delete_from_hash_table(HashTable* hashTable, Node* node) {
      
     while (currentNode != NULL) {
         if (strcmp(currentNode->id, node->id) == 0) {
-            // First node in the bucket
             if (previousNode == NULL) {
                 hashTable->bucket[key] = currentNode->next;
             } else {
@@ -123,30 +136,37 @@ void delete_from_hash_table(HashTable* hashTable, Node* node) {
             }
             
             free(currentNode);
+            TOTAL_BYTES -= sizeof(HashNode);
             hashTable->itemsCount--;
-            // printf("Node with ID %s deleted from hash table.\n", node->id);
             return;
         }
 
         previousNode = currentNode;
         currentNode = currentNode->next;
     }
-    // printf("Node with ID %s not found in hash table.\n", node->id);
 }
 
+// Free the hash table
 void free_hash_table(HashTable* hashTable) {
     for (int i = 0; i < hashTable->tableSize; i++) {
         HashNode* bucketNode = hashTable->bucket[i];
         while (bucketNode != NULL) {
-            HashNode* temp = bucketNode;
+            HashNode* tempNode = bucketNode;
             bucketNode = bucketNode->next;
-            free(temp);  // Free the bucketNode HashNode
+            // Free the bucketNode HashNode
+            free(tempNode);
+            TOTAL_BYTES -= sizeof(HashNode);  
         }
     }
-    free(hashTable->bucket); // Free the array of buckets
-    free(hashTable); 
+    
+    // Free the array of buckets
+    free(hashTable->bucket); 
+    TOTAL_BYTES -= sizeof(HashNode*) * hashTable->tableSize;
+    free(hashTable);
+    TOTAL_BYTES -= sizeof(HashTable);
 }
 
+// Helper function to print the hash table
 void print_hash_table(HashTable* hashTable) {
     printf("Hash Table:\n");
 

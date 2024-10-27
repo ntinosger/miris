@@ -3,8 +3,10 @@
 #include <string.h>
 #include "edge.h"
 
+// Global counter for tracking the dynamically allocated memory from malloc
 size_t TOTAL_BYTES = 0;
 
+// Create the edge
 Edge* create_edge(char* from, char* to, const double amount, const char* date) {
     Edge* newEdge = malloc(sizeof(Edge));
     if (newEdge == NULL) {
@@ -12,7 +14,7 @@ Edge* create_edge(char* from, char* to, const double amount, const char* date) {
         exit(EXIT_FAILURE);
     }
     TOTAL_BYTES += sizeof(Edge);
-    // printf("edge.c %zu\n", TOTAL_BYTES);
+
     newEdge->nodeFrom = from;
     newEdge->nodeTo = to;
     newEdge->amount = amount;
@@ -21,6 +23,8 @@ Edge* create_edge(char* from, char* to, const double amount, const char* date) {
     return newEdge;
 }
 
+// Free the edge
 void free_edge(Edge* edge) {
+    TOTAL_BYTES -= sizeof(Edge);
     free(edge);
 }
